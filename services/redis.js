@@ -1,8 +1,11 @@
 const {createClient} = require("redis");
 const dayjs = require("dayjs");
+
+require('dotenv').config()
 const client = createClient({
     host: "localhost",
-    port: 6379
+    port: 6379,
+    password: process.env.REDIS_PASSWORD
 })
 
 async function redisLoad(){

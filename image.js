@@ -1,5 +1,4 @@
 const {getCropsOf, getAllImagesOf} = require("./services/firebase");
-const {redisLoad} = require("./services/redis");
 const _ = require("lodash");
 
 async function getRandomImage(videoId){
@@ -12,10 +11,6 @@ async function getRandomImage(videoId){
     return _.sample(filtered_images)
 }
 
-async function main(){
-    await redisLoad();
-    const img = await getRandomImage("LSB3JNc4iQ4")
-    console.log(img)
+module.exports = {
+    getRandomImage
 }
-
-main().then()
