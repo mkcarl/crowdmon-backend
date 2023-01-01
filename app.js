@@ -4,7 +4,7 @@ const {getRandomImage} = require("./image");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const {setCrop} = require("./services/firebase");
+const {setCrop, getAllImagesOf} = require("./services/firebase");
 
 const app = express();
 const port = 8000;
@@ -21,6 +21,12 @@ app.get('/randomImage', async (req, res) => {
     catch (e) {
         res.send(e.message)
     }
+})
+
+app.get("/test", async (req, res) => {
+    const allvids = await getAllImagesOf(req.query.videoId)
+
+    res.send(allvids)
 })
 
 app.post("/crop", jsonParser, async (req, res) => {

@@ -13,9 +13,10 @@ const bucket = getStorage().bucket();
 
 async function getCropsOf(videoId) {
     const ref = await db.collection('crops')
-        .where('video_id', '==', '${videoId}').get()
+        .where('video_id', '==', videoId)
+        .get()
     const cropped = ref.docs.map(doc => {
-        return doc.data().video_id
+        return doc.data().image_id
     })
 
     return cropped
@@ -27,7 +28,8 @@ async function getAllImagesOf(videoId) {
     if (valFromRedis && val.length > 0) {
         return val
     } else {
-        const files = await bucket.getFiles(`uncropped/${videoId}`)
+        const files = await bucket.getFiles({prefix: `uncropped/${videoId}/`
+    })
         const allImages = []
         for (const file of files[0]) {
             allImages.push({
