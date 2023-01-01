@@ -2,11 +2,16 @@ const {redisLoad} = require("./services/redis");
 const express = require("express");
 const {getRandomImage} = require("./image");
 const morgan = require("morgan");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const {setCrop} = require("./services/firebase");
 
 const app = express();
 const port = 8000;
+const jsonParser = bodyParser.json();
 
 app.use(morgan('combined'))
+app.use(cors())
 
 app.get('/randomImage', async (req, res) => {
     try{
@@ -16,6 +21,34 @@ app.get('/randomImage', async (req, res) => {
     catch (e) {
         res.send(e.message)
     }
+})
+
+app.post("/crop", jsonParser, async (req, res) => {
+    const {videoId, imageId, x, y, width, height, annotationClass, contributorId, timestamp} = req.body
+
+    try{
+
+        if (!videoId || !imageId || !x || !y || !width || !height || !annotationClass || !contributorId || !timestamp) {
+            res.send("Missing parameters")
+            return
+        }
+
+        await setCrop({
+            videoId: videoId,
+            imageId: imageId,
+            x,
+            y,
+            width,
+            height,
+            annotationClass,
+            contributorId,
+            timestamp
+        })
+        res.send("OK")
+    } catch (e){
+        res.send(e.message)
+    }
+
 })
 
 

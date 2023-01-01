@@ -51,6 +51,34 @@ async function getAllAvailableVideos() {
     return ref.docs.map(doc => doc.data().video_id)
 }
 
+async function setCrop(details) {
+    const {
+        videoId,
+        imageId,
+        x,
+        y,
+        width,
+        height,
+        annotationClass,
+        contributorId,
+        timestamp
+    } = details
+
+    await db.collection('crops').add({
+        video_id: videoId,
+        image_id: imageId,
+        annotation_class: annotationClass,
+        annotation_startX: x,
+        annotation_startY: y,
+        annotation_width: width,
+        annotation_height: height,
+        contributor_id: contributorId,
+        timestamp: timestamp,
+    })
+
+
+}
+
 module.exports = {
-    getCropsOf, getAllImagesOf, getAllAvailableVideos
+    getCropsOf, getAllImagesOf, getAllAvailableVideos, setCrop
 }
