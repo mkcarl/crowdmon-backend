@@ -16,17 +16,11 @@ app.use(cors())
 app.get('/randomImage', async (req, res) => {
     try{
         const img = await getRandomImage(req.query.videoId)
-        res.send(img)
+        res.status(200).send(img)
     }
     catch (e) {
-        res.send(e.message)
+        res.status(400).send(e.message)
     }
-})
-
-app.get("/test", async (req, res) => {
-    const allvids = await getAllImagesOf(req.query.videoId)
-
-    res.send(allvids)
 })
 
 app.post("/crop", jsonParser, async (req, res) => {
@@ -34,7 +28,7 @@ app.post("/crop", jsonParser, async (req, res) => {
 
     try{
 
-        if (!videoId || !imageId || !x || !y || !width || !height || !annotationClass || !contributorId || !timestamp) {
+        if (!videoId || !imageId || !annotationClass || !contributorId || !timestamp) {
             res.send("Missing parameters")
             return
         }
@@ -42,17 +36,17 @@ app.post("/crop", jsonParser, async (req, res) => {
         await setCrop({
             videoId: videoId,
             imageId: imageId,
-            x,
-            y,
-            width,
-            height,
+            x: x ? x : null,
+            y: y ? y : null,
+            width : width ? width : null,
+            height : height ? height : null,
             annotationClass,
             contributorId,
             timestamp
         })
-        res.send("OK")
+        res.status(200).send("OK")
     } catch (e){
-        res.send(e.message)
+        res.status(400).send(e.message)
     }
 
 })
