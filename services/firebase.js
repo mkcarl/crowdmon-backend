@@ -22,6 +22,11 @@ async function getCropsOf(videoId) {
     return cropped
 }
 
+async function getAllCrops(){
+    const ref = await db.collection('crops').get()
+    return ref.docs.map(doc => doc.data())
+}
+
 async function getAllImagesOf(videoId) {
     const valFromRedis = await MyRedis.hget('videos', videoId)
     const val = JSON.parse(valFromRedis)
@@ -82,5 +87,5 @@ async function setCrop(details) {
 }
 
 module.exports = {
-    getCropsOf, getAllImagesOf, getAllAvailableVideos, setCrop
+    getCropsOf, getAllImagesOf, getAllAvailableVideos, setCrop, getAllCrops
 }

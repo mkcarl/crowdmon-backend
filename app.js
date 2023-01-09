@@ -4,7 +4,7 @@ const {getRandomImage} = require("./image");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const {setCrop, getAllImagesOf} = require("./services/firebase");
+const {setCrop, getAllImagesOf, getCropsOf, getAllAvailableVideos, getAllCrops} = require("./services/firebase");
 
 const app = express();
 const port = 8000;
@@ -51,6 +51,40 @@ app.post("/crop", jsonParser, async (req, res) => {
 
 })
 
+app.get("/videoCropStatus", async (req, res) => {
+    const videoId = req.query.videoId
+    try{
+        const numOfImages = (await getAllImagesOf(videoId)).length
+        const numOfCrops = (await getCropsOf(videoId)).length
+
+        res.status(200).send({
+            total:numOfImages,
+            cropped:numOfCrops
+        })
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+
+})
+
+app.get("/videoTitles", async (req, res) => {
+    try{
+        const titles = await getAllAvailableVideos();
+        res.status(200).send(titles)
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+
+})
+
+app.get("/crops", async (req, res) => {
+    try {
+        const crops = await getAllCrops()
+        res.status(200).send(crops)
+    } catch (e) {
+        res.status(400).send(e.message)
+    }
+})
 
 app.listen(port, async () => {
     await redisLoad()
