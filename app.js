@@ -10,6 +10,14 @@ const app = express();
 const port = 8000;
 const jsonParser = bodyParser.json();
 
+const https = require("https");
+const fs = require("fs");
+const secureServer = https.createServer({
+    key: fs.readFileSync("security/server.key"),
+    cert: fs.readFileSync("security/server.cert")
+}, app)
+
+
 app.use(morgan('combined'))
 app.use(cors())
 
@@ -86,7 +94,7 @@ app.get("/crops", async (req, res) => {
     }
 })
 
-app.listen(port, async () => {
+secureServer.listen(port, async () => {
     await redisLoad()
     console.log(`API listening at port ${port}`)
 })
