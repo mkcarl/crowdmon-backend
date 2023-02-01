@@ -8,7 +8,7 @@ const {setCrop, getAllImagesOf, getCropsOf, getAllAvailableVideos, getAllCrops} 
 
 const app = express();
 const port = 8000;
-const jsonParser = bodyParser.json();
+const jsonParser = bodyParser.json({limit: '1mb'});
 
 const https = require("https");
 const fs = require("fs");
@@ -32,7 +32,7 @@ app.get('/randomImage', async (req, res) => {
 })
 
 app.post("/crop", jsonParser, async (req, res) => {
-    const {videoId, imageId, x, y, width, height, annotationClass, contributorId, timestamp} = req.body
+    const {videoId, imageId, x, y, width, height, annotationClass, contributorId, timestamp, base64Image} = req.body
 
     try{
 
@@ -50,7 +50,8 @@ app.post("/crop", jsonParser, async (req, res) => {
             height : height ? height : null,
             annotationClass,
             contributorId,
-            timestamp
+            timestamp,
+            base64Image : base64Image ? base64Image : null
         })
         res.status(200).send("OK")
     } catch (e){
@@ -94,7 +95,7 @@ app.get("/crops", async (req, res) => {
     }
 })
 
-secureServer.listen(port, async () => {
+app.listen(port, async () => {
     await redisLoad()
     console.log(`API listening at port ${port}`)
 })

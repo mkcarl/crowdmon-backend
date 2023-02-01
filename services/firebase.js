@@ -68,7 +68,8 @@ async function setCrop(details) {
         height,
         annotationClass,
         contributorId,
-        timestamp
+        timestamp,
+        base64Image
     } = details
 
     await db.collection('crops').add({
@@ -81,6 +82,7 @@ async function setCrop(details) {
         annotation_height: height,
         contributor_id: contributorId,
         timestamp: timestamp,
+        base64Image: base64Image
     })
 
 
