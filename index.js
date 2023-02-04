@@ -98,3 +98,4 @@ app.listen(port, async () => {
     console.log(`API listening at port ${port}`)
 })
 
+module.exports = app;
