@@ -5,7 +5,13 @@ const {getStorage} = require("firebase-admin/storage");
 const dayjs = require("dayjs");
 
 admin.initializeApp({
-    storageBucket: "paimon-dataset.appspot.com", credential: admin.credential.cert("credentials.json")
+    storageBucket: "paimon-dataset.appspot.com", credential: admin.credential.cert(
+        {
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY,
+            projectId: process.env.FIREBASE_PROJECT_ID
+        }
+    )
 });
 const db = getFirestore();
 const bucket = getStorage().bucket();
