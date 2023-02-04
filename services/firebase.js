@@ -28,12 +28,7 @@ async function getAllCrops(){
 }
 
 async function getAllImagesOf(videoId) {
-    const valFromRedis = await MyRedis.hget('videos', videoId)
-    const val = JSON.parse(valFromRedis)
-    if (valFromRedis && val.length > 0) {
-        return val
-    } else {
-        const files = await bucket.getFiles({prefix: `uncropped/${videoId}/`
+    const files = await bucket.getFiles({prefix: `uncropped/${videoId}/`
     })
         const allImages = []
         for (const file of files[0]) {
@@ -48,7 +43,6 @@ async function getAllImagesOf(videoId) {
         await MyRedis.hset('videos', videoId, allImages)
         return allImages
 
-    }
 
 
 }

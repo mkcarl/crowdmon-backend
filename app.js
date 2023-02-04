@@ -1,4 +1,3 @@
-const {redisLoad} = require("./services/redis");
 const express = require("express");
 const {getRandomImage} = require("./image");
 const morgan = require("morgan");
@@ -7,7 +6,7 @@ const bodyParser = require("body-parser");
 const {setCrop, getAllImagesOf, getCropsOf, getAllAvailableVideos, getAllCrops} = require("./services/firebase");
 
 const app = express();
-const port = 8000;
+const port = 80;
 const jsonParser = bodyParser.json({limit: '1mb'});
 
 const https = require("https");
@@ -96,7 +95,6 @@ app.get("/crops", async (req, res) => {
 })
 
 app.listen(port, async () => {
-    await redisLoad()
     console.log(`API listening at port ${port}`)
 })
 
