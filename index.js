@@ -1,3 +1,4 @@
+const {redisLoad} = require("./services/redis");
 const express = require("express");
 const {getRandomImage} = require("./image");
 const morgan = require("morgan");
@@ -96,6 +97,7 @@ app.get("/crops", async (req, res) => {
 })
 
 app.listen(port, async () => {
+    await redisLoad()
     console.log(`API listening at port ${port}`)
 })
 
