@@ -11,6 +11,7 @@ const port = 8000;
 const jsonParser = bodyParser.json({limit: '1mb'});
 
 const path = require("path");
+redisLoad().then()
 
 
 app.use(morgan('combined'))
@@ -23,7 +24,6 @@ app.get('/', (req, res) => {
 })
 
 app.get('/randomImage', async (req, res) => {
-    await redisLoad()
     try{
         const img = await getRandomImage(req.query.videoId)
         res.status(200).send(img)
@@ -34,7 +34,6 @@ app.get('/randomImage', async (req, res) => {
 })
 
 app.post("/crop", jsonParser, async (req, res) => {
-    await redisLoad()
     const {videoId, imageId, x, y, width, height, annotationClass, contributorId, timestamp, base64Image} = req.body
 
     try{
@@ -64,7 +63,6 @@ app.post("/crop", jsonParser, async (req, res) => {
 })
 
 app.get("/videoCropStatus", async (req, res) => {
-    await redisLoad()
     const videoId = req.query.videoId
     try{
         const numOfImages = (await getAllImagesOf(videoId)).length
@@ -81,7 +79,6 @@ app.get("/videoCropStatus", async (req, res) => {
 })
 
 app.get("/videoTitles", async (req, res) => {
-    await redisLoad()
     try{
         const titles = await getAllAvailableVideos();
         res.status(200).send(titles)
@@ -101,7 +98,6 @@ app.get("/crops", async (req, res) => {
 })
 
 app.listen(port, async () => {
-    await redisLoad()
     console.log(`API listening at port ${port}`)
 })
 
