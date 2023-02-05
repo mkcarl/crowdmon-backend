@@ -34,7 +34,7 @@ async function getAllCrops(){
 }
 
 async function getAllImagesOf(videoId) {
-    const valFromRedis = await MyRedis.hget('videos', videoId)
+    const valFromRedis = await MyRedis.hget(`videos:${videoId}`, videoId)
     const val = JSON.parse(valFromRedis)
     if (valFromRedis && val.length > 0) {
         return val
@@ -44,7 +44,7 @@ async function getAllImagesOf(videoId) {
             .get()
         const images = ref.docs[0].data().frames
 
-        await MyRedis.hset('videos', videoId, images)
+        await MyRedis.hset(`videos:${videoId}`, videoId, images)
         return images
 
     }
