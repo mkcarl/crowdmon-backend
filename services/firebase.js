@@ -39,20 +39,13 @@ async function getAllImagesOf(videoId) {
     if (valFromRedis && val.length > 0) {
         return val
     } else {
-        const files = await bucket.getFiles({prefix: `uncropped/${videoId}/`
-        })
-        const allImages = []
-        for (const file of files[0]) {
-            allImages.push({
-                name: file.name.split('/').pop(), url: (await file.getSignedUrl({
-                    action: 'read', expires: dayjs().add(1, 'day').toDate()
-                }))[0]
-            })
-        }
+        const ref = await db.collection('videos')
+            .where("name", '==', videoId)
+            .get()
+        const images = ref.docs[0].data().frames
 
-
-        await MyRedis.hset('videos', videoId, allImages)
-        return allImages
+        await MyRedis.hset('videos', videoId, images)
+        return images
 
     }
 

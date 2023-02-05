@@ -17,15 +17,25 @@ async function getAllImageOf(videoId) {
         if (valFromRedis && val.length > 0) {
             return val
         } else {
-            const images = await cloudinary.api.resources(
-                {prefix: `${videoId}`, type: 'upload'}
-            );
+            let nextCursor = null
+            while (true){
+                const res = await cloudinary.api.resources(
+                    {prefix: `crowdmon/${videoId}`, type: 'upload', max_results: 500, next_cursor: nextCursor}
+                );
+                const images = res.resources
 
-            for (const image of images.resources) {
-                allImages.push({
-                    name: image.public_id,
-                    url: image.url
-                })
+                for (const image of images) {
+                    allImages.push({
+                        name: image.public_id,
+                        url: image.url
+                    })
+                }
+
+                if (!res.next_cursor){
+                    break
+                }
+                nextCursor = res.next_cursor
+
             }
 
         }
