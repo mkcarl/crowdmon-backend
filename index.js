@@ -1,6 +1,7 @@
 const {redisLoad} = require("./services/redis");
 const express = require("express");
 const {getRandomImage} = require("./image");
+const MyCloudinary = require('./services/cloudinary')
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -64,7 +65,7 @@ app.post("/crop", jsonParser, async (req, res) => {
 app.get("/videoCropStatus", async (req, res) => {
     const videoId = req.query.videoId
     try{
-        const numOfImages = (await getAllImagesOf(videoId)).length
+        const numOfImages = (await MyCloudinary.getAllImagesOf(videoId)).length
         const numOfCrops = (await getCropsOf(videoId)).length
 
         res.status(200).send({
