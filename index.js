@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/randomImage', async (req, res) => {
+    await redisLoad()
     try{
         const img = await getRandomImage(req.query.videoId)
         res.status(200).send(img)
@@ -33,6 +34,7 @@ app.get('/randomImage', async (req, res) => {
 })
 
 app.post("/crop", jsonParser, async (req, res) => {
+    await redisLoad()
     const {videoId, imageId, x, y, width, height, annotationClass, contributorId, timestamp, base64Image} = req.body
 
     try{
@@ -62,6 +64,7 @@ app.post("/crop", jsonParser, async (req, res) => {
 })
 
 app.get("/videoCropStatus", async (req, res) => {
+    await redisLoad()
     const videoId = req.query.videoId
     try{
         const numOfImages = (await getAllImagesOf(videoId)).length
@@ -78,6 +81,7 @@ app.get("/videoCropStatus", async (req, res) => {
 })
 
 app.get("/videoTitles", async (req, res) => {
+    await redisLoad()
     try{
         const titles = await getAllAvailableVideos();
         res.status(200).send(titles)
@@ -88,8 +92,8 @@ app.get("/videoTitles", async (req, res) => {
 })
 
 app.get("/crops", async (req, res) => {
+    const crops = await getAllCrops()
     try {
-        const crops = await getAllCrops()
         res.status(200).send(crops)
     } catch (e) {
         res.status(400).send(e.message)
