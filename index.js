@@ -89,9 +89,22 @@ app.get("/videoTitles", async (req, res) => {
 })
 
 app.get("/crops", async (req, res) => {
+    const start = +req.query.start || 0
+    const end = start + 100
+
     const crops = await getAllCrops()
+
+    const paginated = crops.slice(start, end)
+
+    const hasNext = end < crops.length
+
     try {
-        res.status(200).send(crops)
+        res.status(200).send(
+            {
+                crops : paginated,
+                next : hasNext ? end : null
+            }
+        )
     } catch (e) {
         res.status(400).send(e.message)
     }
