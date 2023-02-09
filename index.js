@@ -4,14 +4,16 @@ const {getRandomImage} = require("./image");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const {setCrop, getAllImagesOf, getCropsOf, getAllAvailableVideos, getAllCrops} = require("./services/firebase");
+const {getAllImagesOf, getAllAvailableVideos} = require("./services/firebase");
 
 const app = express();
 const port = 8000;
 const jsonParser = bodyParser.json({limit: '1mb'});
 
 const path = require("path");
+const {setCrop, getAllCrops, getCropsOf, mongoLoad} = require("./services/mongodb");
 redisLoad().then()
+mongoLoad().then()
 
 
 app.use(morgan('combined'))
