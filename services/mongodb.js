@@ -1,4 +1,5 @@
 const {MongoClient} = require('mongodb');
+const MyRedis = require("./redis");
 require('dotenv').config()
 
 const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -81,9 +82,35 @@ async function getCropsOf(videoId){
     return crops
 }
 
+async function getAllImagesOf(videoId) {
+    const valFromRedis = await MyRedis.hget(`videos:${videoId}`, videoId)
+    const val = JSON.parse(valFromRedis)
+    if (valFromRedis && val.length > 0) {
+        return val
+    } else {
+        const db = client.db('crowdmon');
+        const ref = await db.collection('videos')
+            .findOne({'name': videoId})
+
+        const images = ref.frames
+
+        await MyRedis.hset(`videos:${videoId}`, videoId, images)
+        return images
+
+    }
+}
+
+async function getAllAvailableVideos() {
+    const db = client.db('crowdmon');
+    const ref = await db.collection('available_video').find().toArray()
+    return ref.map(doc => doc.video_id)
+}
+
 module.exports = {
     mongoLoad,
     getAllCrops,
     setCrop,
-    getCropsOf
+    getCropsOf,
+    getAllImagesOf,
+    getAllAvailableVideos
 }
